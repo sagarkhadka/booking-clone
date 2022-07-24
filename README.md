@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Booking website clone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project developed while learning react front-end.
 
 ## Available Scripts
 

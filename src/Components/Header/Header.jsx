@@ -6,9 +6,11 @@ import { DateRange } from 'react-date-range'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({type}) => {
     const [openDate, setOpenDate] = useState(false)
+    const [destination, setDestination] = useState("")
     const [date, setDate] = useState([
         {
             startDate: new Date(),
@@ -24,6 +26,8 @@ const Header = ({type}) => {
         room: 1
     })
 
+    const navigate = useNavigate()
+
     const handleOption = (name, operation) => {
         setOptions((prev) => {
             return {
@@ -32,6 +36,11 @@ const Header = ({type}) => {
             }
         })
     }
+
+    const handleSearch = () => {
+        navigate('/hotels', {state: {destination, date, options}})
+    }
+
     return (
         <div className='header'>
             <div className={ type === "list" ? "headerContainer listMode" : "headerContainer" }>
@@ -71,58 +80,58 @@ const Header = ({type}) => {
                         <button className='headerBtn'>Sign in / Register</button>
                         {/* Header search fields */}
                         <div className="headerSearch">
-                        {/* Field to search places */}
-                        <div className="headerSearchItem">
-                            <MdBed size={25} className='headerIcon' />
-                            <input type="text" placeholder='Where are you going' className='headerSearchInput' />
-                        </div>
-                        {/* Field to select date */}
-                        <div className="headerSearchItem">
-                            <MdCalendarToday size={21} className='headerIcon calendar' />
-                            <span onClick={()=>setOpenDate(!openDate)} className='headerSearchText'>
-                                {`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(date[0].endDate, "MM/dd/yyy")}`}
-                            </span>
-                            {openDate && <DateRange editableDateInputs={true} onChange={(item) => setDate([item.selection])} moveRangeOnFirstSelection={false} ranges={date} className="date" />}
-                        </div>
-                        {/* Field to add person */}
-                        <div className="headerSearchItem">
-                            <MdPerson size={24} className='headerIcon' />
-                            <span onClick={ () => setOpenOptions(!openOptions)} className='headerSearchText'>{`${options.adult} adult | ${options.children} childern | ${options.room} room`}</span>
-                            { openOptions && <div className="options">
-                                {/* Adult */}
-                                <div className="optionsItem">
-                                    <span className="optionText">Adult</span>
-                                    <div className="optionCounter">
-                                        <button disabled={ options.adult <= 1 } className="btn optionCounterButton" onClick={ () => handleOption ('adult', 'd') }>-</button>
-                                        <span className="optionCounterNumber">{options.adult}</span>
-                                        <button className="btn optionCounterButton" onClick={ () => handleOption ('adult', 'i') }>+</button>
+                            {/* Field to search places */}
+                            <div className="headerSearchItem">
+                                <MdBed size={25} className='headerIcon' />
+                                <input type="text" placeholder='Where are you going' className='headerSearchInput' onChange={(e) => setDestination(e.target.value)} />
+                            </div>
+                            {/* Field to select date */}
+                            <div className="headerSearchItem">
+                                <MdCalendarToday size={21} className='headerIcon calendar' />
+                                <span onClick={()=>setOpenDate(!openDate)} className='headerSearchText'>
+                                    {`${format(date[0].startDate, "MM/dd/yyyy")} to ${format(date[0].endDate, "MM/dd/yyy")}`}
+                                </span>
+                                {openDate && <DateRange editableDateInputs={true} onChange={(item) => setDate([item.selection])} moveRangeOnFirstSelection={false} ranges={date} className="date" minDate={new Date()} />}
+                            </div>
+                            {/* Field to add person */}
+                            <div className="headerSearchItem">
+                                <MdPerson size={24} className='headerIcon' />
+                                <span onClick={ () => setOpenOptions(!openOptions)} className='headerSearchText'>{`${options.adult} adult | ${options.children} childern | ${options.room} room`}</span>
+                                { openOptions && <div className="options">
+                                    {/* Adult */}
+                                    <div className="optionsItem">
+                                        <span className="optionText">Adult</span>
+                                        <div className="optionCounter">
+                                            <button disabled={ options.adult <= 1 } className="btn optionCounterButton" onClick={ () => handleOption ('adult', 'd') }>-</button>
+                                            <span className="optionCounterNumber">{options.adult}</span>
+                                            <button className="btn optionCounterButton" onClick={ () => handleOption ('adult', 'i') }>+</button>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* Children */}
-                                <div className="optionsItem">
-                                    <span className="optionText">Children</span>
-                                    <div className="optionCounter">
-                                        <button disabled={ options.children <= 1 } className="btn optionCounterButton" onClick={ () => handleOption ('children', 'd') }>-</button>
-                                        <span className="optionCounterNumber">{options.children}</span>
-                                        <button className="btn optionCounterButton" onClick={ () => handleOption ('children', 'i') }>+</button>
+                                    {/* Children */}
+                                    <div className="optionsItem">
+                                        <span className="optionText">Children</span>
+                                        <div className="optionCounter">
+                                            <button disabled={ options.children <= 1 } className="btn optionCounterButton" onClick={ () => handleOption ('children', 'd') }>-</button>
+                                            <span className="optionCounterNumber">{options.children}</span>
+                                            <button className="btn optionCounterButton" onClick={ () => handleOption ('children', 'i') }>+</button>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* Room */}
-                                <div className="optionsItem">
-                                    <span className="optionText">Room</span>
-                                    <div className="optionCounter">
-                                        <button disabled={ options.room<= 1 } className="btn optionCounterButton" onClick={ () => handleOption ('room', 'd') } >-</button>
-                                        <span className="optionCounterNumber">{options.room}</span>
-                                        <button className="btn optionCounterButton" onClick={ () => handleOption ('room', 'i') }>+</button>
+                                    {/* Room */}
+                                    <div className="optionsItem">
+                                        <span className="optionText">Room</span>
+                                        <div className="optionCounter">
+                                            <button disabled={ options.room<= 1 } className="btn optionCounterButton" onClick={ () => handleOption ('room', 'd') } >-</button>
+                                            <span className="optionCounterNumber">{options.room}</span>
+                                            <button className="btn optionCounterButton" onClick={ () => handleOption ('room', 'i') }>+</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>}
+                                </div>}
+                            </div>
+                            {/* Search button */}
+                            <div className="headerSerachItem">
+                                <button className="headerBtn" onClick={handleSearch}>Search</button>
+                            </div>
                         </div>
-                        {/* Search button */}
-                        <div className="headerSerachItem">
-                            <button className="headerBtn">Search</button>
-                        </div>
-                    </div>
                     </>
                 }
             </div>
